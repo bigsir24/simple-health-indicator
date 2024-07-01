@@ -4,9 +4,11 @@
   "package": "bigsir.simplehealthindicator.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "WorldRendererMixin"
   ],
   "client": [
+    "GameSettingsMixin",
+    "LivingRendererMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
