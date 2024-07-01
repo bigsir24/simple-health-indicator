@@ -68,7 +68,7 @@ public class RenderUtils {
 			int healthRow = MathHelper.ceilInt(healthFull, heartsInRow);
 
 			yOff = rows * 4;
-			int xOff = 0;
+			int xOff;
 			zOff = (rows - 1) * 0.001 + 0.001;
 			for (int i = 0; i < healthRow; i++) {
 				xOff = 0;
