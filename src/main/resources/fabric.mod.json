@@ -29,6 +29,12 @@
 		],
 		"recipesReady": [
 			"bigsir.simplehealthindicator.SHealthIndicator"
+		],
+		"beforeClientStart": [
+			"bigsir.simplehealthindicator.SHealthIndicator"
+		],
+		"afterClientStart": [
+			"bigsir.simplehealthindicator.SHealthIndicator"
 		]
 	},
   "mixins": [

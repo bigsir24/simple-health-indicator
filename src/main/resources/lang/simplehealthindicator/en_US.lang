@@ -1,0 +1,4 @@
+simplehealthindicator.options=Health Indicator
+simplehealthindicator.category=Display
+options.simplehealthindicator.maxhearts=Hearts per Row
+options.simplehealthindicator.heartscale=Scale
