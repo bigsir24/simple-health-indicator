@@ -2,7 +2,7 @@ package bigsir.simplehealthindicator.render;
 
 import bigsir.simplehealthindicator.SHealthIndicator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.HitResult;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityLiving;
@@ -42,7 +42,7 @@ public class RenderUtils {
 
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-			GL11.glBindTexture(3553, mc.renderEngine.getTexture("/gui/icons.png"));
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, mc.renderEngine.getTexture("/assets/minecraft/textures/gui/icons.png"));
 			GL11.glTranslated(0, 0, 0.001);
 
 			boolean heartsFlash = entity.heartsFlashTime / 3 % 2 == 1;
