@@ -1,5 +1,6 @@
 package bigsir.simplehealthindicator.render;
 
+import bigsir.simplehealthindicator.SHealthIndicator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.core.HitResult;
@@ -22,8 +23,8 @@ public class RenderUtils {
 			entity = entityCache;
 			if((systemNano - lastNano) / 1000000L > 1000 ) entityCache = null;
 		}
-		double scale = 0.3;
-		int heartsInRow = 5;
+		double scale = 0.3 * ((SHealthIndicator.heartScale.value + 50)/100.0);
+		int heartsInRow = SHealthIndicator.maxHearts.value + 2;
 		if(entity != null) {
 			int hearts = MathHelper.ceilInt(((EntityLiving) entity).getMaxHealth(), 2);
 			int length = Math.min(hearts, heartsInRow);
@@ -31,7 +32,7 @@ public class RenderUtils {
 
 			GL11.glPushMatrix();
 			GL11.glTranslated(-mc.activeCamera.getX(partialTick), -mc.activeCamera.getY(partialTick), -mc.activeCamera.getZ(partialTick));
-			GL11.glTranslated(entity.xo + (entity.x - entity.xo) * partialTick, entity.yo + (entity.y - entity.yo) * partialTick + entity.bbHeight + 0.7, entity.zo + (entity.z - entity.zo) * partialTick);
+			GL11.glTranslated(entity.xo + (entity.x - entity.xo) * partialTick, entity.yo + (entity.y - entity.yo) * partialTick + /*2.5*/ entity.bbHeight + 0.7, entity.zo + (entity.z - entity.zo) * partialTick);
 			GL11.glRotatef(180 - (float) mc.activeCamera.getYRot(partialTick), 0, 1, 0);
 			GL11.glRotatef((float) -mc.activeCamera.getXRot(partialTick), 1, 0, 0);
 
@@ -100,5 +101,9 @@ public class RenderUtils {
 		tessellator.addVertexWithUV(posX * scale,(posY+1) * scale,zOffset, (16 + offset)/256d,0);
 
 		tessellator.draw();
+	}
+
+	public static Entity getCachedEntity(){
+		return entityCache;
 	}
 }
