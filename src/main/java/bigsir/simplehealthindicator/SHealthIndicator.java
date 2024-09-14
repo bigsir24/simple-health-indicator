@@ -1,7 +1,6 @@
 package bigsir.simplehealthindicator;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.options.components.OptionsCategory;
 import net.minecraft.client.gui.options.components.ToggleableOptionComponent;
 import net.minecraft.client.gui.options.data.OptionsPage;
@@ -54,9 +53,6 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 
 	@Override
 	public void afterClientStart() {
-		GameSettings settings = Minecraft.getMinecraft(Minecraft.class).gameSettings;
-		maxHearts = new RangeOption(settings, "simplehealthindicator.maxhearts", 3, 9);
-		heartScale = new RangeOption(settings, "simplehealthindicator.heartscale", 50 ,150);
 		optionsPage = new OptionsPage("simplehealthindicator.options", Item.foodApple.getDefaultStack());
 		OptionsPages.register(optionsPage);
 
@@ -65,5 +61,10 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 				.withComponent(new ToggleableOptionComponent<>(maxHearts))
 				.withComponent(new ToggleableOptionComponent<>(heartScale))
 		);
+	}
+
+	public static void optionsInit(GameSettings settings){
+		maxHearts = new RangeOption(settings, "simplehealthindicator.maxhearts", 3, 9);
+		heartScale = new RangeOption(settings, "simplehealthindicator.heartscale", 50 ,150);
 	}
 }
