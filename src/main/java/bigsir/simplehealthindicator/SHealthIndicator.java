@@ -25,6 +25,7 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 	public static OptionsPage optionsPage;
 	public static RangeOption maxHearts;
 	public static RangeOption heartScale;
+	public static RangeOption displayTime;
 
 	@Override
 	public void beforeGameStart() {
@@ -60,11 +61,13 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 			new OptionsCategory("simplehealthindicator.category")
 				.withComponent(new ToggleableOptionComponent<>(maxHearts))
 				.withComponent(new ToggleableOptionComponent<>(heartScale))
+				.withComponent(new ToggleableOptionComponent<>(displayTime))
 		);
 	}
 
 	public static void optionsInit(GameSettings settings){
 		maxHearts = new RangeOption(settings, "simplehealthindicator.maxhearts", 3, 9);
 		heartScale = new RangeOption(settings, "simplehealthindicator.heartscale", 50 ,150);
+		displayTime = new RangeOption(settings, "simplehealthindicator.displaytime", 10 ,30);
 	}
 }

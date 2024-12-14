@@ -14,6 +14,7 @@ public class RenderUtils {
 	private static Entity entityCache = null;
 
 	public static void renderInfo(Minecraft mc, float partialTick, long systemNano){
+		long renderTimeLength = SHealthIndicator.displayTime.value;
 		Entity entity = null;
 		if(mc.objectMouseOver != null && mc.objectMouseOver.entity instanceof EntityLiving){
 			lastNano = systemNano;
@@ -21,7 +22,7 @@ public class RenderUtils {
 		}else if(mc.objectMouseOver == null || mc.objectMouseOver.hitType != HitResult.HitType.ENTITY && entityCache != null){
 			if(entityCache != null && entityCache.removed) entityCache = null;
 			entity = entityCache;
-			if((systemNano - lastNano) / 1000000L > 1000 ) entityCache = null;
+			if((systemNano - lastNano) / 1000000L > renderTimeLength * 100 ) entityCache = null;
 		}
 		double scale = 0.3 * ((SHealthIndicator.heartScale.value + 50)/100.0);
 		int heartsInRow = SHealthIndicator.maxHearts.value + 2;
@@ -105,5 +106,10 @@ public class RenderUtils {
 
 	public static Entity getCachedEntity(){
 		return entityCache;
+	}
+
+	public static void setCachedEntity(Entity entity){
+		entityCache = entity;
+		lastNano = System.nanoTime();
 	}
 }

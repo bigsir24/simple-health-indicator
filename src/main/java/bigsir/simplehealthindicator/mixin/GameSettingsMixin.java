@@ -21,6 +21,8 @@ public abstract class GameSettingsMixin {
 	public RangeOption maxHearts;
 	@Unique
 	public RangeOption heartScale;
+	@Unique
+	public RangeOption displayTime;
 
 	@Inject(method = "getDisplayString", at = @At("TAIL"), cancellable = true)
 	public void offsetDisplayValue(Option<?> option, CallbackInfoReturnable<String> cir){
@@ -28,6 +30,8 @@ public abstract class GameSettingsMixin {
 			cir.setReturnValue(String.valueOf(((RangeOption)option).getValueIndex() + 2));
 		}else if(option == SHealthIndicator.heartScale){
 			cir.setReturnValue( (((RangeOption)option).getValueIndex() + 50) / 100.0 + "x");
+		}else if(option == SHealthIndicator.displayTime){
+			cir.setReturnValue( (((RangeOption)option).getValueIndex()) / 10.0 + "s");
 		}
 	}
 
@@ -37,5 +41,6 @@ public abstract class GameSettingsMixin {
 
 		this.maxHearts = SHealthIndicator.maxHearts;
 		this.heartScale = SHealthIndicator.heartScale;
+		this.displayTime = SHealthIndicator.displayTime;
 	}
 }
