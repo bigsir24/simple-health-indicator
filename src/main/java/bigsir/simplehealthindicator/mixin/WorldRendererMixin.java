@@ -17,7 +17,7 @@ public abstract class WorldRendererMixin {
 	@Shadow
 	private long systemTime;
 
-	@Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "net/minecraft/client/util/debug/Debug.change(Ljava/lang/String;)V", ordinal = 9))
+	@Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/util/debug/Debug;change(Ljava/lang/String;)V", ordinal = 9))
 	public void renderInject(float partialTick, long updateRenderersUntil, CallbackInfo ci){
 		RenderUtils.renderInfo(this.mc, partialTick, this.systemTime);
 	}

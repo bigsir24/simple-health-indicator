@@ -42,9 +42,9 @@
   ],
 
   "depends": {
-		"minecraft": "^7.2-beta",
+		"minecraft": "^7.3-beta",
     "fabricloader": ">=0.15.5",
-		"halplibe":  ">=4.0.1"
+		"halplibe":  ">=5.0.0"
   },
   "suggests": {
   }

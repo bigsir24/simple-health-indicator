@@ -1,5 +1,8 @@
-simplehealthindicator.options=Health Indicator
+simplehealthindicator.title=Health Indicator
 simplehealthindicator.category=Display
 options.simplehealthindicator.maxhearts=Hearts per Row
 options.simplehealthindicator.heartscale=Scale
-options.simplehealthindicator.displayTime=Display Time
+options.simplehealthindicator.displaytime=Display Time
+options.simplehealthindicator.renderorder=Rendering Style
+options.simplehealthindicator.healthFullbright=Fullbright
+options.simplehealthindicator.healthBrightness=Brightness (if fullbright is enabled)

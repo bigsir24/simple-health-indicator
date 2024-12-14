@@ -7,7 +7,7 @@
   ],
   "client": [
     "GameSettingsMixin",
-    "LivingRendererMixin",
+    "MobRendererMixin",
     "WorldRendererMixin"
   ],
   "injectors": {

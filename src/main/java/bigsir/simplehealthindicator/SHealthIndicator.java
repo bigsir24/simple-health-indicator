@@ -1,19 +1,22 @@
 package bigsir.simplehealthindicator;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.gui.options.components.BooleanOptionComponent;
+import net.minecraft.client.gui.options.components.FloatOptionComponent;
 import net.minecraft.client.gui.options.components.OptionsCategory;
 import net.minecraft.client.gui.options.components.ToggleableOptionComponent;
 import net.minecraft.client.gui.options.data.OptionsPage;
 import net.minecraft.client.gui.options.data.OptionsPages;
 import net.minecraft.client.option.GameSettings;
-import net.minecraft.client.option.RangeOption;
-import net.minecraft.core.item.Item;
+import net.minecraft.client.option.OptionBoolean;
+import net.minecraft.client.option.OptionFloat;
+import net.minecraft.client.option.OptionRange;
+import net.minecraft.core.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.util.ClientStartEntrypoint;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
-
 
 public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint, ClientStartEntrypoint {
     public static final String MOD_ID = "simplehealthindicator";
@@ -23,9 +26,12 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
         LOGGER.info("Simple Health Indicator initialized.");
     }
 	public static OptionsPage optionsPage;
-	public static RangeOption maxHearts;
-	public static RangeOption heartScale;
-	public static RangeOption displayTime;
+	public static OptionRange maxHearts;
+	public static OptionRange heartScale;
+	public static OptionRange displayTime;
+	public static OptionRange renderOrder;
+	public static OptionBoolean healthFullbright;
+	public static OptionFloat healthBrightness;
 
 	@Override
 	public void beforeGameStart() {
@@ -54,7 +60,7 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 
 	@Override
 	public void afterClientStart() {
-		optionsPage = new OptionsPage("simplehealthindicator.options", Item.foodApple.getDefaultStack());
+		optionsPage = new OptionsPage("simplehealthindicator.title", Items.FOOD_APPLE.getDefaultStack());
 		OptionsPages.register(optionsPage);
 
 		optionsPage.withComponent(
@@ -62,12 +68,18 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 				.withComponent(new ToggleableOptionComponent<>(maxHearts))
 				.withComponent(new ToggleableOptionComponent<>(heartScale))
 				.withComponent(new ToggleableOptionComponent<>(displayTime))
+				.withComponent(new ToggleableOptionComponent<>(renderOrder))
+				.withComponent(new BooleanOptionComponent(healthFullbright))
+				.withComponent(new FloatOptionComponent(healthBrightness))
 		);
 	}
 
 	public static void optionsInit(GameSettings settings){
-		maxHearts = new RangeOption(settings, "simplehealthindicator.maxhearts", 3, 9);
-		heartScale = new RangeOption(settings, "simplehealthindicator.heartscale", 50 ,150);
-		displayTime = new RangeOption(settings, "simplehealthindicator.displaytime", 10 ,30);
+		maxHearts = new OptionRange(settings, "simplehealthindicator.maxhearts", 3, 9);
+		heartScale = new OptionRange(settings, "simplehealthindicator.heartscale", 50, 150);
+		displayTime = new OptionRange(settings, "simplehealthindicator.displaytime", 10, 30);
+		renderOrder = new OptionRange(settings, "simplehealthindicator.renderorder", 0, 2);
+		healthFullbright = new OptionBoolean(settings, "simplehealthindicator.healthFullbright", false);
+		healthBrightness = new OptionFloat(settings, "simplehealthindicator.healthBrightness", 1.0f);
 	}
 }
