@@ -1,6 +1,7 @@
 package bigsir.simplehealthindicator.mixin;
 
 import bigsir.simplehealthindicator.SHealthIndicator;
+import bigsir.simplehealthindicator.options.IOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.option.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,7 @@ public abstract class GameSettingsMixin {
 	@Unique
 	public OptionFloat healthBrightness;
 
-	@Inject(method = "getDisplayString", at = @At("TAIL"), cancellable = true)
+	@Inject(method = "getDisplayString", at = @At("HEAD"), cancellable = true)
 	public void offsetDisplayValue(Option<?> option, CallbackInfoReturnable<String> cir){
 		if(option == SHealthIndicator.maxHearts){
 			cir.setReturnValue(String.valueOf(maxHearts.getValueIndex() + 2));
@@ -38,6 +39,8 @@ public abstract class GameSettingsMixin {
 			cir.setReturnValue( displayTime.getValueIndex() / 10.0 + "s");
 		}else if(option == SHealthIndicator.renderOrder){
 			cir.setReturnValue( renderOrder.getValueIndex() == 0 ? "Default" : "Guidebook" );
+		}else if(option == SHealthIndicator.healthBrightness && !SHealthIndicator.healthFullbright.value){
+			cir.setReturnValue("Disabled");
 		}
 	}
 
@@ -51,5 +54,13 @@ public abstract class GameSettingsMixin {
 		this.renderOrder = SHealthIndicator.renderOrder;
 		this.healthFullbright = SHealthIndicator.healthFullbright;
 		this.healthBrightness = SHealthIndicator.healthBrightness;
+	}
+
+	@Inject(method = "optionChanged", at = @At("HEAD"))
+	public void changeText(Option<?> option, CallbackInfo ci){
+		if(option == SHealthIndicator.healthFullbright){
+			((IOption)SHealthIndicator.healthBrightnessComponent).simple_health_indicator$refreshString();
+			((IOption)SHealthIndicator.healthBrightnessComponent).simple_health_indicator$getSlider().enabled = SHealthIndicator.healthFullbright.value;
+		}
 	}
 }

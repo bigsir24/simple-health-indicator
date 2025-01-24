@@ -5,4 +5,4 @@ options.simplehealthindicator.heartscale=Scale
 options.simplehealthindicator.displaytime=Display Time
 options.simplehealthindicator.renderorder=Rendering Style
 options.simplehealthindicator.healthFullbright=Fullbright
-options.simplehealthindicator.healthBrightness=Brightness (if fullbright is enabled)
+options.simplehealthindicator.healthBrightness=Brightness

@@ -1,5 +1,6 @@
 package bigsir.simplehealthindicator;
 
+import bigsir.simplehealthindicator.options.IOption;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.gui.options.components.BooleanOptionComponent;
 import net.minecraft.client.gui.options.components.FloatOptionComponent;
@@ -32,6 +33,7 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 	public static OptionRange renderOrder;
 	public static OptionBoolean healthFullbright;
 	public static OptionFloat healthBrightness;
+	public static FloatOptionComponent healthBrightnessComponent;
 
 	@Override
 	public void beforeGameStart() {
@@ -70,8 +72,9 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 				.withComponent(new ToggleableOptionComponent<>(displayTime))
 				.withComponent(new ToggleableOptionComponent<>(renderOrder))
 				.withComponent(new BooleanOptionComponent(healthFullbright))
-				.withComponent(new FloatOptionComponent(healthBrightness))
+				.withComponent(healthBrightnessComponent = new FloatOptionComponent(healthBrightness))
 		);
+		((IOption)healthBrightnessComponent).simple_health_indicator$getSlider().enabled = false;
 	}
 
 	public static void optionsInit(GameSettings settings){

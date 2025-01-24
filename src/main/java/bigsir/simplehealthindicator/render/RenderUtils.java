@@ -46,11 +46,15 @@ public class RenderUtils {
 
 			GL11.glPushMatrix();
 			GL11.glTranslated(-mc.activeCamera.getX(partialTick), -mc.activeCamera.getY(partialTick), -mc.activeCamera.getZ(partialTick));
-			GL11.glTranslated(lerp(entity.xo, entity.x, partialTick), lerp(entity.yo, entity.y, partialTick) + /*2.5*/ entity.bbHeight + 0.7, lerp(entity.zo, entity.z, partialTick));
+
+			//Previously headHeight + 1
+			float heightOffset = entity.getHeadHeight() + (((Mob) entity).nickname.isEmpty() ? 0.6F : 0.85F);
+
+			GL11.glTranslated(lerp(entity.xo, entity.x, partialTick), lerp(entity.yo, entity.y, partialTick) + heightOffset, lerp(entity.zo, entity.z, partialTick));
 			GL11.glRotatef(180 - (float) mc.activeCamera.getYRot(partialTick), 0, 1, 0);
 			GL11.glRotatef((float) -mc.activeCamera.getXRot(partialTick), 1, 0, 0);
 
-			GL11.glTranslated(-(length - (length - 1) / 9d) / 2d * scale, -0.5 * scale, 0);
+			GL11.glTranslated(-(length - (length - 1) / 9d) / 2d * scale, 0, 0);
 
 			Tessellator tessellator = Tessellator.instance;
 
@@ -110,25 +114,15 @@ public class RenderUtils {
 
 		icon.parentAtlas.bind();
 
-		tessellator.addVertexWithUV(posX * scale,posY*scale,zOffset, icon.getIconUMin()+0.0001, icon.getIconVMax()-0.0001);
-		tessellator.addVertexWithUV((posX+1) * scale,posY *scale, zOffset, icon.getIconUMax()-0.0001,icon.getIconVMax()-0.0001);
-
-		tessellator.addVertexWithUV((posX+1) * scale,(posY+1) * scale,zOffset, icon.getIconUMax()-0.0001, icon.getIconVMin()+0.0001);
-		tessellator.addVertexWithUV(posX * scale,(posY+1) * scale,zOffset, icon.getIconUMin()+0.0001,icon.getIconVMin()+0.0001);
+		tessellator.addVertexWithUV(posX * scale,posY * scale, zOffset, icon.getIconUMin()+0.0001, icon.getIconVMax()-0.0001);
+		tessellator.addVertexWithUV((posX+1) * scale,posY * scale, zOffset, icon.getIconUMax()-0.0001,icon.getIconVMax()-0.0001);
+		tessellator.addVertexWithUV((posX+1) * scale,(posY+1) * scale, zOffset, icon.getIconUMax()-0.0001, icon.getIconVMin()+0.0001);
+		tessellator.addVertexWithUV(posX * scale,(posY+1) * scale, zOffset, icon.getIconUMin()+0.0001,icon.getIconVMin()+0.0001);
 
 		tessellator.draw();
 	}
 
 	private static double lerp(double old, double curr, float partialTick){
 		return old + (curr - old) * partialTick;
-	}
-
-	public static Entity getCachedEntity(){
-		return entityCache;
-	}
-
-	public static void setCachedEntity(Entity entity){
-		entityCache = entity;
-		lastNano = System.nanoTime();
 	}
 }

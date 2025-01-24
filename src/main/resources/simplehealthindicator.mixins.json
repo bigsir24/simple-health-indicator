@@ -6,8 +6,8 @@
   "mixins": [
   ],
   "client": [
+    "FloatOptionComponentMixin",
     "GameSettingsMixin",
-    "MobRendererMixin",
     "WorldRendererMixin"
   ],
   "injectors": {
