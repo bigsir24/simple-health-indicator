@@ -1,10 +1,15 @@
 package bigsir.simplehealthindicator;
 
+import bigsir.simplehealthindicator.options.IOption;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.gui.options.components.BooleanOptionComponent;
+import net.minecraft.client.gui.options.components.FloatOptionComponent;
 import net.minecraft.client.gui.options.components.OptionsCategory;
 import net.minecraft.client.gui.options.components.ToggleableOptionComponent;
 import net.minecraft.client.gui.options.data.OptionsPage;
 import net.minecraft.client.gui.options.data.OptionsPages;
+import net.minecraft.client.option.BooleanOption;
+import net.minecraft.client.option.FloatOption;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.option.RangeOption;
 import net.minecraft.core.item.Item;
@@ -26,6 +31,10 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 	public static RangeOption maxHearts;
 	public static RangeOption heartScale;
 	public static RangeOption displayTime;
+	public static RangeOption renderOrder;
+	public static BooleanOption healthFullbright;
+	public static FloatOption healthBrightness;
+	public static FloatOptionComponent healthBrightnessComponent;
 
 	@Override
 	public void beforeGameStart() {
@@ -54,7 +63,7 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 
 	@Override
 	public void afterClientStart() {
-		optionsPage = new OptionsPage("simplehealthindicator.options", Item.foodApple.getDefaultStack());
+		optionsPage = new OptionsPage("simplehealthindicator.title", Item.foodApple.getDefaultStack());
 		OptionsPages.register(optionsPage);
 
 		optionsPage.withComponent(
@@ -62,12 +71,19 @@ public class SHealthIndicator implements ModInitializer, GameStartEntrypoint, Re
 				.withComponent(new ToggleableOptionComponent<>(maxHearts))
 				.withComponent(new ToggleableOptionComponent<>(heartScale))
 				.withComponent(new ToggleableOptionComponent<>(displayTime))
+				.withComponent(new ToggleableOptionComponent<>(renderOrder))
+				.withComponent(new BooleanOptionComponent(healthFullbright))
+				.withComponent(healthBrightnessComponent = new FloatOptionComponent(healthBrightness))
 		);
+		((IOption)healthBrightnessComponent).simple_health_indicator$getSlider().enabled = false;
 	}
 
 	public static void optionsInit(GameSettings settings){
 		maxHearts = new RangeOption(settings, "simplehealthindicator.maxhearts", 3, 9);
 		heartScale = new RangeOption(settings, "simplehealthindicator.heartscale", 50 ,150);
 		displayTime = new RangeOption(settings, "simplehealthindicator.displaytime", 10 ,30);
+		renderOrder = new RangeOption(settings, "simplehealthindicator.renderorder", 0, 2);
+		healthFullbright = new BooleanOption(settings, "simplehealthindicator.healthFullbright", false);
+		healthBrightness = new FloatOption(settings, "simplehealthindicator.healthBrightness", 1.0f);
 	}
 }
