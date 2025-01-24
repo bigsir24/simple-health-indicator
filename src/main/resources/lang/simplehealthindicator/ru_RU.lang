@@ -1,0 +1,4 @@
+simplehealthindicator.options=Индикатор здоровья
+simplehealthindicator.category=Отображение
+options.simplehealthindicator.maxhearts=Сердец в ряду
+options.simplehealthindicator.heartscale=Масштаб
