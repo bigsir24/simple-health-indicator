@@ -6,6 +6,7 @@ import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.HitResult;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityLiving;
+import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.util.helper.MathHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -38,8 +39,9 @@ public class RenderUtils {
 			GL11.glPushMatrix();
 			GL11.glTranslated(-mc.activeCamera.getX(partialTick), -mc.activeCamera.getY(partialTick), -mc.activeCamera.getZ(partialTick));
 
+			float playerHeight = (entity instanceof EntityPlayer ? (((EntityPlayer) entity).isDwarf() ? 0.4F : 1.4F) : 0);
 			//Previously headHeight + 1
-			float heightOffset = entity.getHeadHeight() + (((EntityLiving) entity).nickname.isEmpty() ? 0.6F : 0.85F);
+			float heightOffset = entity.getHeadHeight() + (((EntityLiving) entity).nickname.isEmpty() ? 0.6F : 0.85F) + playerHeight;
 
 			GL11.glTranslated(entity.xo + (entity.x - entity.xo) * partialTick, entity.yo + (entity.y - entity.yo) * partialTick + heightOffset, entity.zo + (entity.z - entity.zo) * partialTick);
 			GL11.glRotatef(180 - (float) mc.activeCamera.getYRot(partialTick), 0, 1, 0);
