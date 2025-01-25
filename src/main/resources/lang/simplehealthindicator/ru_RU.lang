@@ -1,0 +1,12 @@
+simplehealthindicator.options=Индикатор здоровья
+simplehealthindicator.category=Отображение
+options.simplehealthindicator.maxhearts=Сердец в ряду
+options.simplehealthindicator.heartscale=Масштаб
+
+options.simplehealthindicator.displaytime=Время отображения
+options.simplehealthindicator.renderorder=Стиль отрисовки
+options.simplehealthindicator.healthFullbright=Fullbright
+options.simplehealthindicator.healthBrightness=Яркость
+
+
+
