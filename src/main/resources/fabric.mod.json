@@ -14,22 +14,13 @@
   },
 
 	"icon": "icon.png",
-  "license": "CC0-1.0",
+  "license": "GPL-3.0",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
 			"bigsir.simplehealthindicator.SHealthIndicator"
     ],
-		"beforeGameStart": [
-			"bigsir.simplehealthindicator.SHealthIndicator"
-		],
-		"afterGameStart": [
-			"bigsir.simplehealthindicator.SHealthIndicator"
-		],
-		"recipesReady": [
-			"bigsir.simplehealthindicator.SHealthIndicator"
-		],
 		"beforeClientStart": [
 			"bigsir.simplehealthindicator.SHealthIndicator"
 		],

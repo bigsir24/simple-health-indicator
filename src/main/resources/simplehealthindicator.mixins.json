@@ -8,6 +8,7 @@
   "client": [
     "FloatOptionComponentMixin",
     "GameSettingsMixin",
+    "MobMixin",
     "WorldRendererMixin"
   ],
   "injectors": {
