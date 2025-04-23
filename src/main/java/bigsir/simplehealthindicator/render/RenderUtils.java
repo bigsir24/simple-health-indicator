@@ -2,18 +2,18 @@ package bigsir.simplehealthindicator.render;
 
 import bigsir.simplehealthindicator.SHealthIndicator;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.render.LightmapHelper;
 import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.client.render.texture.stitcher.IconCoordinate;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.util.helper.MathHelper;
-import net.minecraft.core.util.phys.HitResult;
 import org.lwjgl.opengl.GL11;
 
 public class RenderUtils {
-	private static long lastNano = 0;
-	private static Entity entityCache = null;
+	public static long lastNano = 0;
+	public static Entity entity = null;
 	private static final IconCoordinate CONTAINER = TextureRegistry.getTexture("minecraft:gui/hud/heart/container");
 	private static final IconCoordinate CONTAINER_BLINKING = TextureRegistry.getTexture("minecraft:gui/hud/heart/container_blinking");
 	private static final IconCoordinate FULL = TextureRegistry.getTexture("minecraft:gui/hud/heart/full");
@@ -25,20 +25,26 @@ public class RenderUtils {
 		int renderOrder = SHealthIndicator.renderOrder.value == 0 ? 1 : -1;
 		long renderTimeLength = SHealthIndicator.displayTime.value;
 
-		Entity entity = null;
-		if(mc.objectMouseOver != null && mc.objectMouseOver.entity instanceof Mob){
-			lastNano = systemNano;
-			entity = entityCache = mc.objectMouseOver.entity;
-		}else if(mc.objectMouseOver == null || mc.objectMouseOver.hitType != HitResult.HitType.ENTITY && entityCache != null){
-			if(entityCache != null && entityCache.removed) entityCache = null;
-			entity = entityCache;
-			if((systemNano - lastNano) / 1000000L > renderTimeLength * 100 ) entityCache = null;
+		Entity mouseOverEntity = getMouseOverEntity(mc);
+
+		if(mouseOverEntity instanceof Mob && mouseOverEntity != entity){
+			setTarget(mouseOverEntity);
 		}
+
+		if((systemNano - lastNano) / 1000000L > renderTimeLength * 100 ) entity = null;
+
 		double scale = 0.3 * ((SHealthIndicator.heartScale.value + 50)/100.0);
 		int heartsInRow = SHealthIndicator.maxHearts.value + 2;
 
 		if(entity != null) {
+
 			float brightness = SHealthIndicator.healthFullbright.value ? SHealthIndicator.healthBrightness.value : entity.getBrightness(partialTick);
+
+			if(LightmapHelper.isLightmapEnabled()){
+				brightness = applyGamma(brightness, mc.gameSettings.brightness.value);
+			}else{
+				brightness += 0.2F;
+			}
 
 			int hearts = MathHelper.ceilInt(((Mob) entity).getMaxHealth(), 2);
 			int length = Math.min(hearts, heartsInRow);
@@ -122,7 +128,22 @@ public class RenderUtils {
 		tessellator.draw();
 	}
 
+	private static Entity getMouseOverEntity(Minecraft mc){
+		return mc.objectMouseOver == null ? null : mc.objectMouseOver.entity;
+	}
+
 	private static double lerp(double old, double curr, float partialTick){
 		return old + (curr - old) * partialTick;
+	}
+
+	public static void setTarget(Entity mob){
+		entity = mob;
+		lastNano = System.nanoTime();
+	}
+
+	public static float applyGamma(float color, float gamma) {
+		float color2 = 1.0F - color;
+		color2 = 1.0F - color2 * color2 * color2 * color2;
+		return color * (1.0F - gamma) + color2 * gamma;
 	}
 }
