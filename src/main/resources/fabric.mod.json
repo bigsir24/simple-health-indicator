@@ -16,16 +16,16 @@
 	"icon": "icon.png",
   "license": "GPL-3.0",
 
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
     "main": [
 			"bigsir.simplehealthindicator.SHealthIndicator"
     ],
 		"beforeClientStart": [
-			"bigsir.simplehealthindicator.SHealthIndicator"
+			"bigsir.simplehealthindicator.SHIClient"
 		],
 		"afterClientStart": [
-			"bigsir.simplehealthindicator.SHealthIndicator"
+			"bigsir.simplehealthindicator.SHIClient"
 		]
 	},
   "mixins": [
@@ -35,7 +35,7 @@
   "depends": {
 		"minecraft": "^7.3-beta",
     "fabricloader": ">=0.15.5",
-		"halplibe":  ">=5.0.0"
+		"halplibe":  ">=5.2.4"
   },
   "suggests": {
   }

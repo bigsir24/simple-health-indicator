@@ -3,7 +3,8 @@
   "minVersion": "0.8",
   "package": "bigsir.simplehealthindicator.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
+  "server": [
+    "MobMixinServer"
   ],
   "client": [
     "FloatOptionComponentMixin",

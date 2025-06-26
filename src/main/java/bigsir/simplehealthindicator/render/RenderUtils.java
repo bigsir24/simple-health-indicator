@@ -1,6 +1,6 @@
 package bigsir.simplehealthindicator.render;
 
-import bigsir.simplehealthindicator.SHealthIndicator;
+import bigsir.simplehealthindicator.SHIClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.LightmapHelper;
 import net.minecraft.client.render.tessellator.Tessellator;
@@ -22,8 +22,8 @@ public class RenderUtils {
 	private static final IconCoordinate HALF_BLINKING = TextureRegistry.getTexture("minecraft:gui/hud/heart/half_blinking");
 
 	public static void renderInfo(Minecraft mc, float partialTick, long systemNano){
-		int renderOrder = SHealthIndicator.renderOrder.value == 0 ? 1 : -1;
-		long renderTimeLength = SHealthIndicator.displayTime.value;
+		int renderOrder = SHIClient.renderOrder.value == 0 ? 1 : -1;
+		long renderTimeLength = SHIClient.displayTime.value;
 
 		Entity mouseOverEntity = getMouseOverEntity(mc);
 
@@ -33,12 +33,12 @@ public class RenderUtils {
 
 		if((systemNano - lastNano) / 1000000L > renderTimeLength * 100 ) entity = null;
 
-		double scale = 0.3 * ((SHealthIndicator.heartScale.value + 50)/100.0);
-		int heartsInRow = SHealthIndicator.maxHearts.value + 2;
+		double scale = 0.3 * ((SHIClient.heartScale.value + 50)/100.0);
+		int heartsInRow = SHIClient.maxHearts.value + 2;
 
 		if(entity != null) {
 
-			float brightness = SHealthIndicator.healthFullbright.value ? SHealthIndicator.healthBrightness.value : entity.getBrightness(partialTick);
+			float brightness = SHIClient.healthFullbright.value ? SHIClient.healthBrightness.value : entity.getBrightness(partialTick);
 
 			if(LightmapHelper.isLightmapEnabled()){
 				brightness = applyGamma(brightness, mc.gameSettings.brightness.value);

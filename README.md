@@ -1,6 +1,7 @@
 # Simple Health Indicator
 > [!NOTE]
-> This mod is client-side, it should not be installed on the server.
+> 
+> This mod is mainly client-side, but it can optionally be installed on servers to send more accurate information to clients.
 
 Displays a health indicator above mobs.
 
