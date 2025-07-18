@@ -27,11 +27,11 @@ public class RenderUtils {
 
 		Entity mouseOverEntity = getMouseOverEntity(mc);
 
-		if(mouseOverEntity instanceof Mob && mouseOverEntity != entity){
+		if ((entity != null && entity.removed) || (systemNano - lastNano) / 1_000_000L > renderTimeLength * 100 ) entity = null;
+
+		if (mouseOverEntity instanceof Mob) {
 			setTarget(mouseOverEntity);
 		}
-
-		if((systemNano - lastNano) / 1000000L > renderTimeLength * 100 ) entity = null;
 
 		double scale = 0.3 * ((SHIClient.heartScale.value + 50)/100.0);
 		int heartsInRow = SHIClient.maxHearts.value + 2;
@@ -73,16 +73,18 @@ public class RenderUtils {
 				heartsFlash = false;
 			}
 
-			int yOff = (rows - 1) * 4;
+			boolean fillOrder = SHIClient.fillOrder.value == 0;
+
+			int yOff = fillOrder ? (rows - 1) * 4 : 0;
 			double zOff = (rows - 1) * 0.001;
 			for (int i = 0; i < rows; i++) {
 				int xOff = 0;
 				for (int j = 0; j < Math.min(hearts - i * heartsInRow, heartsInRow); j++) {
 					drawHeart(tessellator, heartsFlash ? CONTAINER_BLINKING : CONTAINER, xOff, yOff, zOff, scale, brightness);
 					xOff += 8;
-					zOff -= 0.001 * renderOrder;
+					zOff -= 0.001 * (fillOrder ? renderOrder : -renderOrder);
 				}
-				yOff -= 4;
+				yOff -= fillOrder ? 4 : -4;
 			}
 
 
@@ -91,22 +93,21 @@ public class RenderUtils {
 			boolean drawHalf = health % 2 != 0;
 			int healthRow = MathHelper.ceilInt(healthFull, heartsInRow);
 
-			yOff = rows * 4;
+			yOff = fillOrder ? (rows - 1) * 4 : 0;
 			int xOff;
 			zOff = (rows - 1) * 0.001 + 0.001;
 			for (int i = 0; i < healthRow; i++) {
 				xOff = 0;
-				yOff -= 4;
 				int heartsRemaining = Math.min(healthFull - i * heartsInRow, heartsInRow);
 				for (int j = 0; j < heartsRemaining; j++) {
 					drawHeart(tessellator, drawHalf && i == healthRow - 1 && j == heartsRemaining - 1 ? HALF : FULL, xOff, yOff, zOff, scale, brightness);
 					xOff += 8;
-					zOff -= 0.001 * renderOrder;
+					zOff -= 0.001 * (fillOrder ? renderOrder : -renderOrder);
 				}
+				yOff -= fillOrder ? 4 : -4;
 			}
 			GL11.glPopMatrix();
 		}
-
 	}
 
 	private static void drawHeart(Tessellator tessellator, IconCoordinate icon, int xOffset, int yOffset, double zOffset, double scale, float brightness){

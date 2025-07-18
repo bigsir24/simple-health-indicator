@@ -12,9 +12,14 @@ import net.minecraft.client.option.OptionBoolean;
 import net.minecraft.client.option.OptionFloat;
 import net.minecraft.client.option.OptionRange;
 import net.minecraft.core.item.Items;
+import net.minecraft.core.lang.I18n;
 import turniplabs.halplibe.util.ClientStartEntrypoint;
+import turniplabs.halplibe.util.OptionsInitEntrypoint;
 
-public class SHIClient implements ClientStartEntrypoint {
+import static bigsir.simplehealthindicator.SHealthIndicator.MOD_ID;
+
+public class SHIClient implements ClientStartEntrypoint, OptionsInitEntrypoint {
+	public static final String OPTION_STRING = "options." + MOD_ID + ".string.";
 	public static OptionsPage optionsPage;
 	public static OptionRange maxHearts;
 	public static OptionRange heartScale;
@@ -23,6 +28,7 @@ public class SHIClient implements ClientStartEntrypoint {
 	public static OptionBoolean healthFullbright;
 	public static OptionFloat healthBrightness;
 	public static FloatOptionComponent healthBrightnessComponent;
+	public static OptionRange fillOrder;
 
 	@Override
 	public void beforeClientStart() {
@@ -41,17 +47,24 @@ public class SHIClient implements ClientStartEntrypoint {
 				.withComponent(new ToggleableOptionComponent<>(displayTime))
 				.withComponent(new ToggleableOptionComponent<>(renderOrder))
 				.withComponent(new BooleanOptionComponent(healthFullbright))
+				.withComponent(new ToggleableOptionComponent<>(fillOrder))
 				.withComponent(healthBrightnessComponent = new FloatOptionComponent(healthBrightness))
 		);
 		((IOption)healthBrightnessComponent).simple_health_indicator$getSlider().enabled = false;
 	}
 
-	public static void optionsInit(GameSettings settings){
+	public static String translateString(String string) {
+		return I18n.getInstance().translateKey(OPTION_STRING + string);
+	}
+
+	@Override
+	public void initOptions(GameSettings settings) {
 		maxHearts = new OptionRange(settings, "simplehealthindicator.maxhearts", 3, 9);
 		heartScale = new OptionRange(settings, "simplehealthindicator.heartscale", 50, 150);
 		displayTime = new OptionRange(settings, "simplehealthindicator.displaytime", 10, 30);
 		renderOrder = new OptionRange(settings, "simplehealthindicator.renderorder", 0, 2);
 		healthFullbright = new OptionBoolean(settings, "simplehealthindicator.healthFullbright", false);
 		healthBrightness = new OptionFloat(settings, "simplehealthindicator.healthBrightness", 1.0f);
+		fillOrder = new OptionRange(settings, "simplehealthindicator.fillorder", 0, 2);
 	}
 }

@@ -26,6 +26,9 @@
 		],
 		"afterClientStart": [
 			"bigsir.simplehealthindicator.SHIClient"
+		],
+		"initOptions": [
+			"bigsir.simplehealthindicator.SHIClient"
 		]
 	},
   "mixins": [

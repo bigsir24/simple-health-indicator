@@ -6,3 +6,10 @@ options.simplehealthindicator.displaytime=Display Time
 options.simplehealthindicator.renderorder=Rendering Style
 options.simplehealthindicator.healthFullbright=Fullbright
 options.simplehealthindicator.healthBrightness=Brightness
+options.simplehealthindicator.fillorder=Fill Order
+
+options.simplehealthindicator.string.disabled=Disabled
+options.simplehealthindicator.string.guidebook=Guidebook
+options.simplehealthindicator.string.default=Default
+options.simplehealthindicator.string.up=Up
+options.simplehealthindicator.string.down=Down
