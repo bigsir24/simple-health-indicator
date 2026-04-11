@@ -21,13 +21,7 @@
     "main": [
 			"bigsir.simplehealthindicator.SHealthIndicator"
     ],
-		"beforeClientStart": [
-			"bigsir.simplehealthindicator.SHIClient"
-		],
-		"afterClientStart": [
-			"bigsir.simplehealthindicator.SHIClient"
-		],
-		"initOptions": [
+		"client": [
 			"bigsir.simplehealthindicator.SHIClient"
 		]
 	},
@@ -36,9 +30,9 @@
   ],
 
   "depends": {
-		"minecraft": "^7.3-beta",
-    "fabricloader": ">=0.15.5",
-		"halplibe":  ">=5.2.4"
+		"fabricloader": ">=${fabricloader}",
+		"minecraft": "*",
+		"java": ">=${java}"
   },
   "suggests": {
   }

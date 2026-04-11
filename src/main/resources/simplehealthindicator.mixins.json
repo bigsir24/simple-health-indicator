@@ -2,17 +2,23 @@
   "required": true,
   "minVersion": "0.8",
   "package": "bigsir.simplehealthindicator.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_${java}",
   "server": [
     "MobMixinServer"
   ],
-  "client": [
-    "FloatOptionComponentMixin",
-    "GameSettingsMixin",
-    "MobMixin",
-    "WorldRendererMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "FloatOptionComponentMixin",
+    "MobMixin",
+    "PacketHandlerClientMixin",
+    "ScreenOptionsMixin",
+    "WorldRendererMixin",
+    "temp.MinecraftMixin"
+  ],
+  "mixins": [
+    "temp.I18nMixin",
+    "temp.LanguageAccessor"
+  ]
 }

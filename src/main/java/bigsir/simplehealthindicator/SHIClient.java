@@ -1,26 +1,31 @@
 package bigsir.simplehealthindicator;
 
 import bigsir.simplehealthindicator.options.IOption;
+import bigsir.simplehealthindicator.render.RenderUtils;
+import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.options.components.BooleanOptionComponent;
 import net.minecraft.client.gui.options.components.FloatOptionComponent;
 import net.minecraft.client.gui.options.components.OptionsCategory;
 import net.minecraft.client.gui.options.components.ToggleableOptionComponent;
 import net.minecraft.client.gui.options.data.OptionsPage;
 import net.minecraft.client.gui.options.data.OptionsPages;
-import net.minecraft.client.option.GameSettings;
-import net.minecraft.client.option.OptionBoolean;
-import net.minecraft.client.option.OptionFloat;
-import net.minecraft.client.option.OptionRange;
+import net.minecraft.client.option.*;
+import net.minecraft.client.render.texture.TextureBuffered;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.lang.I18n;
-import turniplabs.halplibe.util.ClientStartEntrypoint;
-import turniplabs.halplibe.util.OptionsInitEntrypoint;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static bigsir.simplehealthindicator.SHealthIndicator.MOD_ID;
 
-public class SHIClient implements ClientStartEntrypoint, OptionsInitEntrypoint {
+public final class SHIClient implements ClientModInitializer {
 	public static final String OPTION_STRING = "options." + MOD_ID + ".string.";
 	public static OptionsPage optionsPage;
+	public static OptionRange trackedMobCount;
 	public static OptionRange maxHearts;
 	public static OptionRange heartScale;
 	public static OptionRange displayTime;
@@ -30,18 +35,18 @@ public class SHIClient implements ClientStartEntrypoint, OptionsInitEntrypoint {
 	public static FloatOptionComponent healthBrightnessComponent;
 	public static OptionRange fillOrder;
 
-	@Override
-	public void beforeClientStart() {
-
-	}
+	public static TextureBuffered modIcon;
 
 	@Override
-	public void afterClientStart() {
+	public void onInitializeClient() {}
+
+	public static void afterClientStart() {
 		optionsPage = new OptionsPage("simplehealthindicator.title", Items.FOOD_APPLE.getDefaultStack());
 		OptionsPages.register(optionsPage);
 
 		optionsPage.withComponent(
 			new OptionsCategory("simplehealthindicator.category")
+				.withComponent(new ToggleableOptionComponent<>(trackedMobCount))
 				.withComponent(new ToggleableOptionComponent<>(maxHearts))
 				.withComponent(new ToggleableOptionComponent<>(heartScale))
 				.withComponent(new ToggleableOptionComponent<>(displayTime))
@@ -50,21 +55,73 @@ public class SHIClient implements ClientStartEntrypoint, OptionsInitEntrypoint {
 				.withComponent(new ToggleableOptionComponent<>(fillOrder))
 				.withComponent(healthBrightnessComponent = new FloatOptionComponent(healthBrightness))
 		);
-		((IOption)healthBrightnessComponent).simple_health_indicator$getSlider().enabled = false;
+		((IOption)healthBrightnessComponent).simple_health_indicator$getSlider().enabled = SHIClient.healthFullbright.value;
+
+		try (final InputStream is = SHIClient.class.getResourceAsStream("/icon.png")) {
+			if (is != null) {
+				final BufferedImage image = ImageIO.read(is);
+				modIcon = new TextureBuffered(image, false, false, false);
+			}
+		} catch (IOException ignored) {}
+
 	}
 
 	public static String translateString(String string) {
 		return I18n.getInstance().translateKey(OPTION_STRING + string);
 	}
 
-	@Override
-	public void initOptions(GameSettings settings) {
-		maxHearts = new OptionRange(settings, "simplehealthindicator.maxhearts", 3, 9);
-		heartScale = new OptionRange(settings, "simplehealthindicator.heartscale", 50, 150);
-		displayTime = new OptionRange(settings, "simplehealthindicator.displaytime", 10, 30);
-		renderOrder = new OptionRange(settings, "simplehealthindicator.renderorder", 0, 2);
-		healthFullbright = new OptionBoolean(settings, "simplehealthindicator.healthFullbright", false);
-		healthBrightness = new OptionFloat(settings, "simplehealthindicator.healthBrightness", 1.0f);
-		fillOrder = new OptionRange(settings, "simplehealthindicator.fillorder", 0, 2);
+	public static void initOptions() {
+		trackedMobCount = new OptionRange("simplehealthindicator.trackedMobCount", 1, 17)
+			.withDisplayStringProvider(SHIClient::legacyStringProvider)
+			.addOnChangeCallback(SHIClient::changeMobCount);
+		maxHearts = new OptionRange("simplehealthindicator.maxhearts", 3, 9).withDisplayStringProvider(SHIClient::legacyStringProvider);
+		heartScale = new OptionRange("simplehealthindicator.heartscale", 50, 150).withDisplayStringProvider(SHIClient::legacyStringProvider);
+		displayTime = new OptionRange("simplehealthindicator.displaytime", 10, 30).withDisplayStringProvider(SHIClient::legacyStringProvider);
+		renderOrder = new OptionRange("simplehealthindicator.renderorder", 0, 2).withDisplayStringProvider(SHIClient::legacyStringProvider);
+		healthFullbright = new OptionBoolean("simplehealthindicator.healthFullbright", false)
+			.withDisplayStringProvider(SHIClient::legacyStringProvider)
+			.addOnChangeCallback(SHIClient::changeSliderState);
+		healthBrightness = new OptionFloat("simplehealthindicator.healthBrightness", 1.0f).withDisplayStringProvider(SHIClient::legacyStringProvider);
+		fillOrder = new OptionRange("simplehealthindicator.fillorder", 0, 2).withDisplayStringProvider(SHIClient::legacyStringProvider);
+
+		GameSettings.register(trackedMobCount);
+		GameSettings.register(maxHearts);
+		GameSettings.register(heartScale);
+		GameSettings.register(displayTime);
+		GameSettings.register(renderOrder);
+		GameSettings.register(healthFullbright);
+		GameSettings.register(healthBrightness);
+		GameSettings.register(fillOrder);
+
+		// Callback isn't called after saved values are loaded
+		RenderUtils.setTrackedCount(trackedMobCount.value);
+	}
+
+	private static void changeMobCount(final Minecraft mc, final Option<Integer> option) {
+		RenderUtils.setTrackedCount(option.value);
+	}
+
+	private static void changeSliderState(final Minecraft mc, final Option<?> option) {
+		((IOption) SHIClient.healthBrightnessComponent).simple_health_indicator$getSlider().enabled = SHIClient.healthFullbright.value;
+		((IOption) SHIClient.healthBrightnessComponent).simple_health_indicator$refreshString();
+	}
+
+	@SuppressWarnings("DataFlowIssue")
+	private static String legacyStringProvider(final Minecraft mc, final I18n i18n, final Option<?> option) {
+		if(option == SHIClient.maxHearts){
+			return String.valueOf(SHIClient.maxHearts.getValueIndex() + 2);
+		}else if(option == SHIClient.heartScale){
+			return (SHIClient.heartScale.getValueIndex() + 50) / 100.0 + "x";
+		}else if(option == SHIClient.displayTime){
+			return SHIClient.displayTime.getValueIndex() / 10.0 + "s";
+		}else if(option == SHIClient.renderOrder){
+			return SHIClient.renderOrder.getValueIndex() == 0 ? SHIClient.translateString("default") : SHIClient.translateString("guidebook");
+		}else if(option == SHIClient.healthBrightness && !SHIClient.healthFullbright.value){
+			return SHIClient.translateString("disabled");
+		}else if(option == SHIClient.fillOrder){
+			return SHIClient.fillOrder.getValueIndex() == 0 ? SHIClient.translateString("down") : SHIClient.translateString("up");
+		}
+
+		return option.toOptionsString();
 	}
 }

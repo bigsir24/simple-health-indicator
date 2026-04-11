@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = WorldRenderer.class, remap = false)
+@Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin {
 
 	@Shadow
@@ -18,7 +18,7 @@ public abstract class WorldRendererMixin {
 	private long systemTime;
 
 	@Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/util/debug/Debug;change(Ljava/lang/String;)V", ordinal = 9))
-	public void renderInject(float partialTick, long updateRenderersUntil, CallbackInfo ci){
-		RenderUtils.renderInfo(this.mc, partialTick, this.systemTime);
+	public void renderInject(float partialTicks, long updateRenderersUntil, CallbackInfo ci){
+		RenderUtils.renderInfo(this.mc, partialTicks, this.systemTime);
 	}
 }
