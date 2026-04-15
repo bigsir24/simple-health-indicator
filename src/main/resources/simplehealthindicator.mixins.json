@@ -16,9 +16,5 @@
     "ScreenOptionsMixin",
     "WorldRendererMixin",
     "temp.MinecraftMixin"
-  ],
-  "mixins": [
-    "temp.I18nMixin",
-    "temp.LanguageAccessor"
   ]
 }

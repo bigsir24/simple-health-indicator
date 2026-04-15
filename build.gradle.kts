@@ -9,7 +9,7 @@ val lwjglNativesName = "natives-${lwjglNativeList.find { it in osName }}"
 
 val modGroup: String = providers.gradleProperty("mod_group").get()
 val modName: String = providers.gradleProperty("mod_name").get()
-val modVersion: String = providers.gradleProperty("mod_version").get() + "+${libs.versions.bta.get()}"
+val modVersion: String = providers.gradleProperty("mod_version").get() + "+7.4-nightly-${libs.versions.bta.get()}"
 
 val javaVersion: Int = libs.versions.java.map { it.toInt() }.get()
 
@@ -75,8 +75,6 @@ dependencies {
 	implementation("org.lwjgl:lwjgl-stb:${lwjglVer}")
 
 	implementation(libs.commonsLang3)
-
-	include(libs.commonsLang3)
 }
 
 java {

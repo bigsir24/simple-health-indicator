@@ -37,6 +37,7 @@ pluginManagement {
 		) { name = "Fabric" }
 		maven("https://maven.thesignalumproject.net/infrastructure") { name = "SignalumMavenInfrastructure" }
 		mavenCentral()
+		mavenLocal()
 		gradlePluginPortal()
 	}
 }

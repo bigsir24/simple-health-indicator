@@ -3,6 +3,8 @@ package bigsir.simplehealthindicator;
 import bigsir.simplehealthindicator.options.IOption;
 import bigsir.simplehealthindicator.render.RenderUtils;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.options.components.BooleanOptionComponent;
 import net.minecraft.client.gui.options.components.FloatOptionComponent;
@@ -12,13 +14,18 @@ import net.minecraft.client.gui.options.data.OptionsPage;
 import net.minecraft.client.gui.options.data.OptionsPages;
 import net.minecraft.client.option.*;
 import net.minecraft.client.render.texture.TextureBuffered;
+import net.minecraft.client.render.texture.stitcher.TextureRegistry;
+import net.minecraft.client.util.helper.Textures;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.lang.I18n;
+import org.jspecify.annotations.NonNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static bigsir.simplehealthindicator.SHealthIndicator.MOD_ID;
 
@@ -38,7 +45,9 @@ public final class SHIClient implements ClientModInitializer {
 	public static TextureBuffered modIcon;
 
 	@Override
-	public void onInitializeClient() {}
+	public void onInitializeClient() {
+		TextureRegistry.excludedNamespaces.add(MOD_ID);
+	}
 
 	public static void afterClientStart() {
 		optionsPage = new OptionsPage("simplehealthindicator.title", Items.FOOD_APPLE.getDefaultStack());
@@ -57,13 +66,21 @@ public final class SHIClient implements ClientModInitializer {
 		);
 		((IOption)healthBrightnessComponent).simple_health_indicator$getSlider().enabled = SHIClient.healthFullbright.value;
 
-		try (final InputStream is = SHIClient.class.getResourceAsStream("/icon.png")) {
-			if (is != null) {
-				final BufferedImage image = ImageIO.read(is);
-				modIcon = new TextureBuffered(image, false, false, false);
-			}
+		modIcon = new TextureBuffered(loadModIcon(), false, false, false);
+	}
+
+	public static @NonNull BufferedImage loadModIcon() {
+		final ModContainer mod = FabricLoader.getInstance().getModContainer(MOD_ID).orElse(null);
+		if (mod == null) return Textures.missingTexture;
+
+		final Path path = mod.findPath("icon.png").orElse(null);
+		if (path == null) return Textures.missingTexture;
+
+		try (final InputStream is = Files.newInputStream(path)) {
+			return ImageIO.read(is);
 		} catch (IOException ignored) {}
 
+		return Textures.missingTexture;
 	}
 
 	public static String translateString(String string) {

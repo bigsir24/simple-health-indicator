@@ -1,6 +1,7 @@
 package bigsir.simplehealthindicator;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.data.registry.Registries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ public final class SHealthIndicator implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Registries.NAMESPACES.register(MOD_ID, MOD_ID);
 		LOGGER.info("Simple Health Indicator initialized.");
 	}
 }

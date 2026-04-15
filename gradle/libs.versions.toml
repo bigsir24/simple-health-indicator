@@ -6,7 +6,7 @@ java = "17"
 bta = "2026-04-11"
 btaChannel = "nightly"
 
-loader = "0.18.4-bta.10"
+loader = "0.18.4-bta.11"
 legacyLwjgl = "1.0.6"
 
 slf4jApi = "2.0.17"
