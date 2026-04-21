@@ -1,6 +1,7 @@
 package bigsir.simplehealthindicator.mixin;
 
 import bigsir.simplehealthindicator.SHIClient;
+import bigsir.simplehealthindicator.SHIOptions;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -19,7 +20,7 @@ public abstract class ScreenOptionsMixin {
 
 	@WrapOperation(method = "drawPagesListItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ItemElement;render(Lnet/minecraft/core/item/ItemStack;II)V"))
 	public void wrap(ItemElement instance, ItemStack itemStack, int x, int y, Operation<Void> original, @Local(name = "page") OptionsPage page) {
-		if (page != SHIClient.optionsPage) {
+		if (page != SHIOptions.optionsPage) {
 			original.call(instance, itemStack, x, y);
 			return;
 		}

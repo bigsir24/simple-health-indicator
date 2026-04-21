@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MinecraftMixin {
 	@Inject(method = "startGame", at = @At("TAIL"))
 	public void startSHI(CallbackInfo ci) {
-		SHIClient.initOptions();
 		SHIClient.afterClientStart();
 	}
 }

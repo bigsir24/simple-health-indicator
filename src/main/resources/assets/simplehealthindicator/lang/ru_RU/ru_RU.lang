@@ -1,9 +1,9 @@
-simplehealthindicator.options=Индикатор здоровья
+simplehealthindicator.title=Индикатор здоровья
 simplehealthindicator.category=Отображение
-options.simplehealthindicator.maxhearts=Сердец в ряду
-options.simplehealthindicator.heartscale=Масштаб
+options.simplehealthindicator.max_hearts=Сердец в ряду
+options.simplehealthindicator.heart_scale=Масштаб
 
-options.simplehealthindicator.displaytime=Время отображения
-options.simplehealthindicator.renderorder=Стиль отрисовки
-options.simplehealthindicator.healthFullbright=Fullbright
-options.simplehealthindicator.healthBrightness=Яркость
+options.simplehealthindicator.display_time=Время отображения
+options.simplehealthindicator.render_order=Стиль отрисовки
+options.simplehealthindicator.health_fullbright=Fullbright
+options.simplehealthindicator.health_brightness=Яркость

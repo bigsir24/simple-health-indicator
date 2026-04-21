@@ -3,7 +3,7 @@ loom = "1.15-SNAPSHOT"
 
 java = "17"
 
-bta = "2026-04-11"
+bta = "2026-04-21"
 btaChannel = "nightly"
 
 loader = "0.18.4-bta.11"
