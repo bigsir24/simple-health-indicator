@@ -34,6 +34,8 @@ public final class SHIOptions {
 	public static final SHIOptionRange CONTAINER_STYLE = range("container_style", 0, 3);
 	public static final SHIOptionRange FADE_OUT = range("fade_out", 0, 11);
 	public static final OptionBoolean STYLIZED_HEARTS = boolOpt("stylized_hearts", true);
+	public static final SHIOptionRange PAGE_HEALTH_LIMIT = range("page_health_limit", 10, 41);
+	public static final SHIOptionRange PAGE_NUMBER_STYLE = range("page_number_style", 2, 6);
 
 	public static OptionsPage optionsPage;
 	public static FloatOptionComponent healthBrightnessComponent;
@@ -54,6 +56,14 @@ public final class SHIOptions {
 		RENDER_ORDER.setKeys(rawString("default"), rawString("guidebook"));
 		FILL_ORDER.setKeys(rawString("down"), rawString("up"));
 		CONTAINER_STYLE.setKeys(rawString("opaque"), rawString("transparent"), rawString("minimal"));
+		PAGE_NUMBER_STYLE.setKeys(
+			"options.off",
+			rawString("remaining_pages"),
+			rawString("remaining_hearts"),
+			rawString("remaining_health"),
+			rawString("total_hearts"),
+			rawString("total_health")
+		);
 
 		TRACKED_MOB_COUNT.addOnChangeCallback((mc, opt) -> RenderUtils.setTrackedCount(opt.value));
 		HEALTH_FULL_BRIGHT.addOnChangeCallback((mc, opt) -> {
@@ -77,6 +87,11 @@ public final class SHIOptions {
 			return opt.value == 0 ? i18n.translateKey("options.off") : option.customValueString();
 		});
 
+		PAGE_HEALTH_LIMIT.withDisplayStringProvider((mc, i18n, opt) -> {
+			final SHIOptionRange option = (SHIOptionRange) opt;
+			return opt.value == 0 ? i18n.translateKey("options.off") : option.customValueString();
+		});
+
 		// Callback isn't called on init
 		RenderUtils.setTrackedCount(TRACKED_MOB_COUNT.value);
 		final ContainerStyle style = getEnumOrDefault(ContainerStyle.values(), CONTAINER_STYLE.value, ContainerStyle.OPAQUE);
@@ -94,6 +109,8 @@ public final class SHIOptions {
 				.withComponent(new BooleanOptionComponent(DAMAGE_FLASH))
 				.withComponent(new ToggleableOptionComponent<>(HEART_SCALE))
 				.withComponent(new ToggleableOptionComponent<>(DISPLAY_TIME))
+				.withComponent(new ToggleableOptionComponent<>(PAGE_HEALTH_LIMIT))
+				.withComponent(new ToggleableOptionComponent<>(PAGE_NUMBER_STYLE))
 				.withComponent(new BooleanOptionComponent(STYLIZED_HEARTS))
 				.withComponent(new ToggleableOptionComponent<>(CONTAINER_STYLE))
 				.withComponent(new ToggleableOptionComponent<>(RENDER_ORDER))

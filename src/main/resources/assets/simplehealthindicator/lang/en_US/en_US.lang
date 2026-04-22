@@ -13,6 +13,8 @@ options.simplehealthindicator.container_style=Container Style
 options.simplehealthindicator.heart_alignment=Heart Alignment
 options.simplehealthindicator.fade_out=Fade Out
 options.simplehealthindicator.stylized_hearts=Stylized Hearts
+options.simplehealthindicator.page_health_limit=Page Heath Limit
+options.simplehealthindicator.page_number_style=Page Number Style
 
 options.simplehealthindicator.string.disabled=Disabled
 options.simplehealthindicator.string.guidebook=Guidebook
@@ -22,3 +24,8 @@ options.simplehealthindicator.string.down=Down
 options.simplehealthindicator.string.opaque=Opaque
 options.simplehealthindicator.string.transparent=Transparent
 options.simplehealthindicator.string.minimal=Minimal
+options.simplehealthindicator.string.remaining_pages=Remaining Pages
+options.simplehealthindicator.string.remaining_hearts=Remaining Hearts
+options.simplehealthindicator.string.remaining_health=Remaining Health
+options.simplehealthindicator.string.total_hearts=Total Hearts
+options.simplehealthindicator.string.total_health=Total Health

@@ -27,6 +27,7 @@ public final class SHIClient implements ClientModInitializer {
 		try {
 			TextureRegistry.initializeAllFiles(MOD_ID, TextureRegistry.guiSpriteAtlas, true);
 		} catch (URISyntaxException | IOException ignored) {}
+		SHIShaders.init();
 	}
 
 	public static void afterClientStart() {

@@ -52,7 +52,7 @@ public class SHIOptionRange extends OptionRange {
 		return this.displayStringProvider != null ? this.displayStringProvider.getDisplayString(Minecraft.getMinecraft(), I18n.getInstance(), this) : this.customValueString();
 	}
 
-	private String getDisplayEnumString() {
+	public String getDisplayEnumString() {
 		if (keys == null || value < 0 || value >= keys.length) return "[ERROR]";
 		return I18n.getInstance().translateKey(this.keys[value]);
 	}
