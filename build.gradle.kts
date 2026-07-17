@@ -1,43 +1,31 @@
+
 plugins {
 	alias(libs.plugins.loom)
 	java
 }
 
-val osName: String = System.getProperty("os.name").lowercase().replace(" ", "")
-val lwjglNativeList = arrayOf("macos", "windows", "linux")
-val lwjglNativesName = "natives-${lwjglNativeList.find { it in osName }}"
+val lwjglNatives = resolveLwjglNatives()
 
-val modGroup: String = providers.gradleProperty("mod_group").get()
-val modName: String = providers.gradleProperty("mod_name").get()
-val modVersion: String = providers.gradleProperty("mod_version").get() + "+7.4-nightly-${libs.versions.bta.get()}"
+val modVersion: String = "${providers.gradleProperty("mod_version").get()}+${libs.versions.bta.get()}"
+val modGroup: Provider<String> = providers.gradleProperty("mod_group")
+val modName: Provider<String> = providers.gradleProperty("mod_name")
 
-val javaVersion: Int = libs.versions.java.map { it.toInt() }.get()
+val javaVersion: Provider<Int> = libs.versions.java.map { it.toInt() }
 
 base.archivesName = modName
-group = modGroup
+group = modGroup.get()
 version = modVersion
-
 loom {
-	customMinecraftMetadata.set("https://downloads.betterthanadventure.net/bta-client/${libs.versions.btaChannel.get()}/${libs.versions.bta.get()}/manifest.json")
+	val btaChannel = libs.versions.btaChannel.get()
+	val btaVersion = (if (btaChannel == "nightly") "" else "v") + libs.versions.bta.get()
+	customMinecraftMetadata.set("https://downloads.betterthanadventure.net/bta-client/${btaChannel}/${btaVersion}/manifest.json")
 }
-
 repositories {
 	mavenCentral()
 	maven("https://maven.fabricmc.net/") { name = "Fabric" }
 	maven("https://maven.thesignalumproject.net/infrastructure") { name = "SignalumMavenInfrastructure" }
+	maven("https://maven.thesignalumproject.net/nightly") { name = "signalumMavenNightly" }
 	maven("https://maven.thesignalumproject.net/releases") { name = "SignalumMavenReleases" }
-	ivy("https://github.com/Better-than-Adventure") {
-		patternLayout { artifact("[organisation]/releases/download/[revision]/[module]-bta-[revision].jar") }
-		metadataSources { artifact() }
-	}
-	ivy("https://downloads.betterthanadventure.net/bta-client/${libs.versions.btaChannel.get()}/") {
-		patternLayout { artifact("/v[revision]/client.jar") }
-		metadataSources { artifact() }
-	}
-	ivy("https://downloads.betterthanadventure.net/bta-server/${libs.versions.btaChannel.get()}/") {
-		patternLayout { artifact("/v[revision]/server.jar") }
-		metadataSources { artifact() }
-	}
 	ivy("https://piston-data.mojang.com") {
 		patternLayout { artifact("v1/[organisation]/[revision]/[module].jar") }
 		metadataSources { artifact() }
@@ -47,42 +35,36 @@ repositories {
 dependencies {
 	minecraft("::${libs.versions.bta.get()}")
 
-	runtimeOnly(libs.clientJar)
-
+	// Required at compilation & runtime
+	// included in builds as a runtime dependency
 	implementation(libs.loader)
-	implementation(libs.legacyLwjgl)
 
-	implementation(libs.slf4jApi)
-	implementation(libs.guava)
-	implementation(libs.log4j.slf4j2.impl)
-	implementation(libs.log4j.core)
-	implementation(libs.log4j.api)
-	implementation(libs.log4j.api12)
-	implementation(libs.gson)
+	// Only required at compilation
+	// provides documentation, can be removed if that isn't needed
+	compileOnly(libs.bundles.btaLwjgl)
+	compileOnly(libs.joml)
+	compileOnly(libs.joml.primitives)
+	compileOnly(libs.slf4jApi)
 
+	compileOnly(libs.jspecify)
+
+	// Only required for development/launch at runtime, won't be part of any builds
+	runtimeClasspath(libs.clientJar)
+	//localRuntime(libs.modMenu) // Optional, can be removed
 	val lwjglVer = libs.versions.lwjgl.get()
-	implementation(platform("org.lwjgl:lwjgl-bom:${lwjglVer}"))
-
-	runtimeOnly("org.lwjgl:lwjgl::$lwjglNativesName")
-	runtimeOnly("org.lwjgl:lwjgl-glfw::$lwjglNativesName")
-	runtimeOnly("org.lwjgl:lwjgl-openal::$lwjglNativesName")
-	runtimeOnly("org.lwjgl:lwjgl-opengl::$lwjglNativesName")
-	runtimeOnly("org.lwjgl:lwjgl-stb::$lwjglNativesName")
-	implementation("org.lwjgl:lwjgl:${lwjglVer}")
-	implementation("org.lwjgl:lwjgl-glfw:${lwjglVer}")
-	implementation("org.lwjgl:lwjgl-openal:${lwjglVer}")
-	implementation("org.lwjgl:lwjgl-opengl:${lwjglVer}")
-	implementation("org.lwjgl:lwjgl-stb:${lwjglVer}")
-
-	implementation(libs.commonsLang3)
+	localRuntime(platform("org.lwjgl:lwjgl-bom:${lwjglVer}"))
+	localRuntime("org.lwjgl:lwjgl::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-glfw::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-openal::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-opengl::$lwjglNatives")
+	localRuntime("org.lwjgl:lwjgl-stb::$lwjglNatives")
 }
 
 java {
-	sourceCompatibility = JavaVersion.toVersion(javaVersion)
-	targetCompatibility = JavaVersion.toVersion(javaVersion)
+	sourceCompatibility = JavaVersion.toVersion(javaVersion.get())
+	targetCompatibility = JavaVersion.toVersion(javaVersion.get())
 	withSourcesJar()
 }
-
 val licenseFile = run {
 	val rootLicense = layout.projectDirectory.file("LICENSE")
 	val parentLicense = layout.projectDirectory.file("../LICENSE")
@@ -101,13 +83,12 @@ val licenseFile = run {
 		}
 	}
 }
-
 tasks {
 	withType<JavaCompile>().configureEach {
 		options.encoding = "UTF-8"
-		sourceCompatibility = javaVersion.toString()
-		targetCompatibility = javaVersion.toString()
-		if (javaVersion > 8) options.release = javaVersion
+		sourceCompatibility = javaVersion.get().toString()
+		targetCompatibility = javaVersion.get().toString()
+		if (javaVersion.get() > 8) options.release = javaVersion
 	}
 
 	withType<JavaExec>().configureEach { defaultCharacterEncoding = "UTF-8" }
@@ -120,20 +101,54 @@ tasks {
 			}
 		}
 	}
-
 	processResources {
 		val resourceMap = mapOf(
 			"version" to modVersion,
 			"fabricloader" to libs.versions.loader.get(),
-			"java" to libs.versions.java.get(),
+			"java" to libs.versions.java.get()
 		)
+		// This is needed for gradle to recognize changes
+		// made to expanded files
 		inputs.properties(resourceMap)
-		filesMatching("fabric.mod.json") { expand(resourceMap) }
-		filesMatching("**/*.mixins.json") { expand(resourceMap.filterKeys { it == "java" }) }
+
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+		with(copySpec {
+			from("src/main/resources/") {
+				include("fabric.mod.json")
+				include("*.mixins.json")
+				expand(resourceMap)
+			}
+		})
 	}
 }
-
-// Removes LWJGL2 dependencies
+// Removes all outdated manifest.json dependencies
 configurations.configureEach {
 	exclude(group = "org.lwjgl.lwjgl")
+	exclude(group = "net.java.jutils")
+	exclude(group = "net.java.jinput")
+	exclude(group = "net.sf.jopt-simple")
+}
+
+fun resolveLwjglNatives(): String { // Sourced from https://www.lwjgl.org/
+	return Pair(
+		System.getProperty("os.name")!!,
+		System.getProperty("os.arch")!!
+	).let { (name, arch) ->
+		when {
+			arrayOf("Linux", "SunOS", "Unit").any { name.startsWith(it) } ->
+				if (arrayOf("arm", "aarch64").any { arch.startsWith(it) })
+					"natives-linux${if (arch.contains("64") || arch.startsWith("armv8")) "-arm64" else "-arm32"}"
+				else
+					"natives-linux"
+			arrayOf("Mac OS X", "Darwin").any { name.startsWith(it) } ->
+				"natives-macos${if (arch.startsWith("aarch64")) "-arm64" else ""}"
+			arrayOf("Windows").any { name.startsWith(it) } ->
+				if (arch.contains("64"))
+					"natives-windows${if (arch.startsWith("aarch64")) "-arm64" else ""}"
+				else
+					"natives-windows-x86"
+			else ->
+				throw Error("Unrecognized or unsupported platform. Please set \"lwjglNatives\" manually")
+		}
+	}
 }

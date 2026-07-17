@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.option.GameSettings;
+import net.minecraft.client.render.LightmapHelper;
 import net.minecraft.client.render.renderer.GLRenderer;
 import net.minecraft.client.render.renderer.State;
 import net.minecraft.client.render.tessellator.TessellatorShader;
@@ -97,10 +98,12 @@ public final class RenderUtils {
 		tess.setColor4f(1, 1, 1, alpha);
 		TextureRegistry.guiSpriteAtlas.bind();
 
-		byte lightmapIndex = getLightmapIndex(mob, partialTick);
+		final byte lightmapIndex = getLightmapIndex(mob, partialTick);
 		// Make sure that vertex attrib 3 (lightmap)
 		// is enabled in the VAO
 		tess.setLightmapCoord1i(lightmapIndex);
+		LightmapHelper.instance.enableLightmapRendering();
+		GLRenderer.setLightMapStrength(1.0F); // Typically called via Lighting.enableLight()
 
 		final int health = mob.getHealth();
 		final int maxHealth = mob.getMaxHealth();
