@@ -13,7 +13,7 @@ options.simplehealthindicator.container_style=Container Style
 options.simplehealthindicator.heart_alignment=Heart Alignment
 options.simplehealthindicator.fade_out=Fade Out
 options.simplehealthindicator.stylized_hearts=Stylized Hearts
-options.simplehealthindicator.page_health_limit=Page Heath Limit
+options.simplehealthindicator.page_health_limit=Page Health Limit
 options.simplehealthindicator.page_number_style=Page Number Style
 
 options.simplehealthindicator.string.disabled=Disabled

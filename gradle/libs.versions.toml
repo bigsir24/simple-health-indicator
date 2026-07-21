@@ -3,8 +3,8 @@ loom = "1.15-SNAPSHOT"
 
 java = "17"
 
-bta = "8.0-pre3"
-btaChannel = "prerelease"
+bta = "8.0"
+btaChannel = "release"
 
 loader = "0.18.4-bta.11"
 legacyLwjgl = "1.0.6"
