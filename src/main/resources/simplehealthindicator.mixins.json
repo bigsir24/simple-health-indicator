@@ -15,6 +15,7 @@
     "PacketHandlerClientMixin",
     "ScreenOptionsMixin",
     "WorldRendererMixin",
+    "temp.IntegerSliderElementMixin",
     "temp.MinecraftMixin"
   ]
 }
